@@ -2,11 +2,11 @@ package shuttlecocktube
 
 import (
 	"errors"
-	slog "log/slog"
-	"runtime"
-	"time"
+	"log"
 	"math"
 	"os"
+	"runtime"
+	"time"
 )
 
 
@@ -59,7 +59,7 @@ var (
 	}()
 
 	// defaultLogger is the default logger
-	defaultLogger = slog.New(slog.NewTextHandler(os.Stdout,nil)).With(slog.String("component", "shuttlecock-tube"))
+	defaultLogger = Logger(log.New(os.Stderr, "[shuttlecock]: ", log.LstdFlags|log.Lmsgprefix|log.Lmicroseconds))
 	
 	// defaultShuttleTube is the default shuttlecock tube
 	defaultShuttleTube, _ = NewTube(DefaultTubeSize)
@@ -92,8 +92,8 @@ func Free() int {
 // Release releases all resources allocated by the default shuttlecock tube and
 // prevents any new tasks from being submitted. It does not wait for any
 // currently running goroutines to finish.
-func Release() error{
-	return defaultShuttleTube.Release()
+func Release() {
+	defaultShuttleTube.Release()
 }
 
 // ReleaseTimeOut releases all resources allocated by the default shuttlecock tube after the specified timeout duration.
@@ -106,6 +106,6 @@ func ReleaseTimeOut(timeout time.Duration) error {
 // Reboot reinitializes the default shuttlecock tube, resetting its state and resources.
 // This function can be used to restart the tube after releasing it, allowing new tasks
 // to be submitted and processed.
-func Reboot() error{
-	return defaultShuttleTube.Reboot()
+func Reboot() {
+	defaultShuttleTube.Reboot()
 }

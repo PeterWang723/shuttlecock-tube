@@ -15,21 +15,22 @@ var (
 )
 // worker is the interface for a worker
 type worker interface{
-	run() error
-	finish() error
+	run() 
+	finish()
 	lastUsedTime() time.Time
-	inputFunc(func()) error
-	inputParam(interface{}) error
+	setLastUsedTime(time.Time)
+	inputFunc(func())
+	inputArg(any)
 }
 
 // workerQueue is a interface for a queue for workers
 type workerQueue interface {
 	len() int
-	isEMpty() bool
+	isEmpty() bool
 	insert(worker) error
-	pop() worker
+	detach() worker
 	refresh(timeout time.Duration) []worker
-	reset() error
+	reset()
 }
 
 type queueType int
@@ -43,8 +44,6 @@ func newWorkerQueue(qType queueType, size int) workerQueue {
 	switch qType {
 		case queueTypeStack:
 			return newWorkerStack(size)
-		case queueTypeLoopQueue:
-			return newWorkerLoopQueue(size)
 		default:
 			return newWorkerStack(size)
 	}
